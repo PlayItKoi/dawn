@@ -1,0 +1,20 @@
+{% if template.name == "product" %}
+	{% assign chqCurrentVariant = product.selected_or_first_available_variant %}
+	<script type="text/javascript">
+      	chqVariants = [];
+        {% for chqVariant in product.variants %}
+            chqVariants.push('{"id":' + {{chqVariant.id}} + ',"price":' + {{chqVariant.price}} + ', "compare_at_price":' + {% if chqVariant.compare_at_price > chqVariant.price %}{{chqVariant.compare_at_price}}{% else %}null{% endif %} + '}');
+        {% endfor %}
+        chqProductVariants = '[' + chqVariants.join(",") + ']';
+
+      	var chqBaseProductPrice = '{{ chqCurrentVariant.price }}';
+        var chqBaseProductCompareAtPrice = '{{ chqCurrentVariant.compare_at_price }}';
+        var chqMoneyFormat = chqStripHTML('{{ shop.money_format }}');
+        var chqMoneyWithCurrencyFormat = chqStripHTML('{{ shop.money_with_currency_format }}');
+
+        function chqStripHTML(originalString) {
+    		return originalString.replace(/(<([^>]+)>)/gi, "");
+		}
+    </script>
+{% endif %}
+{% include 'change-price-config' %}
